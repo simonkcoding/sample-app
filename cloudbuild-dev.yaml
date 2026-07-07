@@ -11,7 +11,9 @@ steps:
   # Step 3: Push the Docker image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'us-east4-docker.pkg.dev/$PROJECT_ID/my-repository/hello-cloudbuild-dev:$SHORT_SHA']
-
+  # Step 3.5: Update deployment YAML with the built image
+  - name: 'ubuntu'
+    args: ['bash', '-c', 'sed -i "s|<todo>|us-east4-docker.pkg.dev/$PROJECT_ID/my-repository/hello-cloudbuild-dev:$SHORT_SHA|g" dev/deployment.yaml']
   # Step 4: Apply the production deployment YAML file to the production namespace
   - name: 'gcr.io/cloud-builders/kubectl'
     id: 'Deploy'
